@@ -26,7 +26,7 @@ module MobileHost
         mobility: <default("StationaryMobility")> like IMobility {
             @display("p=100,100;is=s");
         }
-        host: Host;
+        host: MobilePhone;
     connections:
         host.gate[0] <--> gate[0];
         host.gate[1] <--> gate[1];
@@ -41,7 +41,7 @@ simple Computer
 }
 
 
-simple Host
+simple MobilePhone
 {
     parameters:
         @display("i=misc/cloud"); // add a default icon

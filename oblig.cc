@@ -97,7 +97,7 @@ void Computer::finish() {
 }
 
 
-class Host: public cSimpleModule {
+class MobilePhone: public cSimpleModule {
 private:
     int drop_count;
     bool left;
@@ -111,17 +111,18 @@ protected:
 };
 
 // The module class needs to be registered with OMNeT++
-Define_Module(Host);
+Define_Module(MobilePhone);
 
-void Host::initialize() {
+void MobilePhone::initialize() {
     drop_count = 5;
     //left = this->getParentModule()->par("left").boolValue();
     scheduleAt(simTime() + 14.0, new cMessage("browseBook"));
     scheduleAt(simTime() + 27.0, new cMessage("payBook"));
 
     scheduleAt(simTime() + 55.0, new cMessage("Wait"));
+
 }
-void Host::handleMessage(cMessage *msg) {
+void MobilePhone::handleMessage(cMessage *msg) {
 
     if (strcmp(msg->getName(), "3- Cloud ready to start") == 0
             && drop_count < 5) {
@@ -146,34 +147,8 @@ void Host::handleMessage(cMessage *msg) {
         send(new ComputerMsg("13- ACK"), "gate$o", 1);
     }
 }
-/*
-void Mobile::handleMessage(cMessage *msg) {
-    if (strcmp(msg->getName(), "3- Cloud ready to start") == 0
-            && drop_count > 0) {
-       bubble("Message Lost");
-        drop_count--;
-    } else if (strcmp(msg->getName(), "3- Cloud ready to start") == 0
-            && drop_count <= 0) {
-        send(new ComputerMessage("4- ACK"), "outCloud");
-        send(new ComputerMessage("5- Where is the book I am looking for?"),
-                "outCloud");
-    } else if (strcmp(msg->getName(),
-            "7- The book you are looking for is in the right-hand shelf") == 0
-            || strcmp(msg->getName(),
-                    "8- The book you are looking for is in the left-hand shelf")
-                    == 0) {
-        send(new ComputerMessage("9- ACK"), "outCloud");
-    } else if (strcmp(msg->getName(), "browseBook") == 0) {
-        bubble("Browse Book");
-    } /*else if (strcmp(msg->getName(), "payBook") == 0) {
-        send(new ComputerMessage("10- Pay the Book"), "outCloud", 1);
-    } else if (strcmp(msg->getName(), "12- Book payed") == 0) {
-        send(new ComputerMessage("13- ACK"), "outCloud", 1);
-    }
-    */
-//}
 
-void Host::finish() {
+void MobilePhone::finish() {
 }
 
 
