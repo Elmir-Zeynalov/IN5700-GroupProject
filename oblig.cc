@@ -89,6 +89,7 @@ void Computer::handleMessage(cMessage *msg) {
     if (strcmp(msg->getName(), "10- Pay the Book") == 0) {
             send(new ComputerMsg("11- ACK"), "gate$o", 1);
             send(new ComputerMsg("12- Book payed"), "gate$o", 1);
+            bubble("Book Payed");
             send(new ComputerMsg("14- Book table index"), "gate$o", 0);
         }
 }
@@ -116,7 +117,7 @@ Define_Module(MobilePhone);
 void MobilePhone::initialize() {
     drop_count = 5;
     //left = this->getParentModule()->par("left").boolValue();
-    scheduleAt(simTime() + 14.0, new cMessage("browseBook"));
+    scheduleAt(simTime() + 15.0, new cMessage("browseBook"));
     scheduleAt(simTime() + 27.0, new cMessage("payBook"));
 
     scheduleAt(simTime() + 55.0, new cMessage("Wait"));

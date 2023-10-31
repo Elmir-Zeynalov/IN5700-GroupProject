@@ -2,26 +2,26 @@
 <movements>
     <movement id="1">
         <!-- draw a square -->
-        <set speed="80" x="690.0" y="560.0"/> 
+        <set speed="80" x="750.0" y="520.0"/> 
         <wait t="6"/>
-        <moveto x="700" y="450"/>
-        <moveto x="700" y="350"/>
-        <moveto x="535" y="350"/>
-        <moveto x="535" y="550"/>
+        <moveto x="700" y="520"/>
+        <moveto x="700" y="250"/>
+        <moveto x="700" y="250"/>
+        <moveto x="550" y="250"/>
         
-        <wait t="2"/>
-        <moveto x="535" y="350"/>
-        <moveto x="650" y="350"/>
+  
+        <moveto x="550" y="450"/>
+        <wait t="3"/>
+        <moveto x="550" y="250"/>
 		
-		<moveto x="650" y="475"/>
-     	<moveto x="650" y="485"/>
-
+ <wait t="1"/>
+		
+		<moveto x="700" y="250"/>
+        <moveto x="700" y="450"/>
+		
 		<wait t="3"/>
-		
-		
-		<wait t="5"/>
-		<moveto x="650" y="550"/>
-     	<moveto x="700" y="650"/>
+		<moveto x="700" y="450"/>
+     	<moveto x="750" y="550"/>
     </movement>
 
 </movements>

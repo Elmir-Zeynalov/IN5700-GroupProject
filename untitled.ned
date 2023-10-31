@@ -118,13 +118,13 @@ network FogNetwork
         }
     submodules:
         cloud: Cloud {
-            @display("p=1327.808,49.280003;r=725");
+            @display("p=1200.808,49.280003;r=600");
         }
         host: MobileHost {
-            @display("p=690.0,560;r=80");
+            @display("p=750.0,520;r=80");
         }
         computer: Computer {
-            @display("p=690.0,310.0;r=180");
+            @display("p=750.0,310.0;r=170");
         }
         visualizer: IntegratedVisualizer {
             @display("p=50,50");
