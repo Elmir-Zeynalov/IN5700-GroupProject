@@ -44,7 +44,7 @@ simple Computer
 simple MobilePhone
 {
     parameters:
-        @display("i=misc/cloud"); // add a default icon
+        @display("i=misc/cloud"); 
     gates:
         inout gate[2];
 }

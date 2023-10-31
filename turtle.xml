@@ -23,5 +23,30 @@
 		<moveto x="700" y="450"/>
      	<moveto x="750" y="550"/>
     </movement>
+    
+    <movement id="2">
+        <set speed="80" x="750" y="520"/>
+        <wait t="6"/>
+         <moveto x="800" y="520"/>
+        <moveto x="800" y="250"/>
+        <moveto x="800" y="250"/>
+        <moveto x="1000" y="250"/>
+        
+  
+        <moveto x="1000" y="450"/>
+        <wait t="3"/>
+        <moveto x="1000" y="250"/>
+		
+ <wait t="1"/>
+		
+		<moveto x="800" y="250"/>
+        <moveto x="800" y="450"/>
+		
+		<wait t="3"/>
+		<moveto x="800" y="450"/>
+     	<moveto x="750" y="550"/>
+
+
+    </movement>
 
 </movements>

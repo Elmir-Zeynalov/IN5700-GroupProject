@@ -50,13 +50,13 @@ void Cloud::handleMessage(cMessage *msg) {
         } else if (strcmp(msg->getName(), "5- Where is the book I am looking for?")
                 == 0) {
             waiting_for_ACK = false;
-            //if (left) {
+            if (left) {
                 send(new ComputerMsg("6- ACK"), "gate$o", 0);
                 send(new ComputerMsg("7- The book you are looking for is in the left-hand shelf"), "gate$o", 0);
-            //} else {
-                //send(new ComputerMsg("6- ACK"), "gate$o", 0);
-                //send(new ComputerMsg("8- The book you are looking for is in the right-hand shelf"), "gate$o", 0);
-            //}
+            } else {
+                send(new ComputerMsg("6- ACK"), "gate$o", 0);
+                send(new ComputerMsg("8- The book you are looking for is in the right-hand shelf"), "gate$o", 0);
+            }
         } else if (strcmp(msg->getName(), "14- Book table index") == 0) {
             send(new ComputerMsg("15- ACK"), "gate$o", 1);
         }
@@ -116,7 +116,7 @@ Define_Module(MobilePhone);
 
 void MobilePhone::initialize() {
     drop_count = 5;
-    //left = this->getParentModule()->par("left").boolValue();
+    left = this->getParentModule()->par("left").boolValue();
     scheduleAt(simTime() + 15.0, new cMessage("browseBook"));
     scheduleAt(simTime() + 27.0, new cMessage("payBook"));
 
