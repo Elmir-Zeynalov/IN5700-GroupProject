@@ -102,6 +102,7 @@ class MobilePhone: public cSimpleModule {
 private:
     int drop_count;
     bool left;
+    char displayString[20];
 
 protected:
     // The following redefined virtual function holds the algorithm.
@@ -115,7 +116,7 @@ protected:
 Define_Module(MobilePhone);
 
 void MobilePhone::initialize() {
-    drop_count = 5;
+    drop_count = 0;
     left = this->getParentModule()->par("left").boolValue();
     scheduleAt(simTime() + 15.0, new cMessage("browseBook"));
     scheduleAt(simTime() + 27.0, new cMessage("payBook"));
@@ -124,6 +125,9 @@ void MobilePhone::initialize() {
 
 }
 void MobilePhone::handleMessage(cMessage *msg) {
+    sprintf(displayString, "lost:%d", drop_count);
+    this->getParentModule()->getDisplayString().setTagArg("t", 0,
+                displayString);
 
     if (strcmp(msg->getName(), "3- Cloud ready to start") == 0
             && drop_count < 5) {
@@ -151,7 +155,6 @@ void MobilePhone::handleMessage(cMessage *msg) {
 
 void MobilePhone::finish() {
 }
-
 
 
 
