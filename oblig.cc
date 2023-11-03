@@ -19,7 +19,9 @@ class Cloud: public cSimpleModule {
 private:
     bool waiting_for_ACK;
     bool left;
-
+    int sent_count;
+       int recv_count;
+       char displayString[20];
 protected:
     // The following redefined virtual function holds the algorithm.
     virtual void initialize() override;
@@ -32,24 +34,34 @@ protected:
 Define_Module(Cloud);
 
 void Cloud::initialize() {
+    sent_count = 0;
+    recv_count = 0;
     left = par("left").boolValue();
 }
 
 void Cloud::handleMessage(cMessage *msg) {
 
     if (strcmp(msg->getName(), "1- Contents of Book Table") == 0) {
+            recv_count++;
             send(new ComputerMsg("2- ACK"), "gate$o", 1);
             scheduleAt(simTime() + 1.0, new cMessage("timeoutEvent"));
             send(new ComputerMsg("3- Cloud ready to start"), "gate$o", 0);
+            sent_count+=2;
             waiting_for_ACK = true;
         } else if (strcmp(msg->getName(), "timeoutEvent") == 0) {
             if (waiting_for_ACK) {
                 scheduleAt(simTime() + 1.0, new cMessage("timeoutEvent"));
                 send(new ComputerMsg("3- Cloud ready to start"), "gate$o", 0);
+                sent_count++;
             }
-        } else if (strcmp(msg->getName(), "5- Where is the book I am looking for?")
+        }else if(strcmp(msg->getName(), "4- ACK") == 0){
+            recv_count++;
+        }
+
+        else if (strcmp(msg->getName(), "5- Where is the book I am looking for?")
                 == 0) {
             waiting_for_ACK = false;
+            recv_count++;
             if (left) {
                 send(new ComputerMsg("6- ACK"), "gate$o", 0);
                 send(new ComputerMsg("7- The book you are looking for is in the left-hand shelf"), "gate$o", 0);
@@ -57,10 +69,18 @@ void Cloud::handleMessage(cMessage *msg) {
                 send(new ComputerMsg("6- ACK"), "gate$o", 0);
                 send(new ComputerMsg("8- The book you are looking for is in the right-hand shelf"), "gate$o", 0);
             }
-        } else if (strcmp(msg->getName(), "14- Book table index") == 0) {
+            sent_count+=2;
+        }
+        else if (strcmp(msg->getName(), "9- ACK")== 0) {
+            recv_count++;
+        }  else if (strcmp(msg->getName(), "14- Book table index") == 0) {
+            recv_count++;
+            sent_count++;
             send(new ComputerMsg("15- ACK"), "gate$o", 1);
         }
-
+    sprintf(displayString, "sent:%d recv:%d", sent_count, recv_count);
+            this->getDisplayString().setTagArg("t", 0,
+                        displayString);
 }
 
 void Cloud::finish() {
@@ -68,7 +88,9 @@ void Cloud::finish() {
 
 class Computer: public cSimpleModule {
 private:
-
+    int sent_count;
+    int recv_count;
+    char displayString[20];
 protected:
     // The following redefined virtual function holds the algorithm.
     virtual void initialize() override;
@@ -81,7 +103,10 @@ protected:
 Define_Module(Computer);
 
 void Computer::initialize() {
+    sent_count = 0;
+    recv_count = 0;
     send(new ComputerMsg("1- Contents of Book Table"), "gate$o", 0);
+    sent_count++;
 }
 
 void Computer::handleMessage(cMessage *msg) {
@@ -89,9 +114,15 @@ void Computer::handleMessage(cMessage *msg) {
     if (strcmp(msg->getName(), "10- Pay the Book") == 0) {
             send(new ComputerMsg("11- ACK"), "gate$o", 1);
             send(new ComputerMsg("12- Book payed"), "gate$o", 1);
+            sent_count+=2;
             bubble("Book Payed");
             send(new ComputerMsg("14- Book table index"), "gate$o", 0);
+            sent_count++;
         }
+    recv_count++;
+    sprintf(displayString, "sent:%d recv:%d", sent_count, recv_count);
+        this->getDisplayString().setTagArg("t", 0,
+                    displayString);
 }
 
 void Computer::finish() {
@@ -101,6 +132,9 @@ void Computer::finish() {
 class MobilePhone: public cSimpleModule {
 private:
     int drop_count;
+    int sent_count;
+    int recv_count;
+
     bool left;
     char displayString[20];
 
@@ -117,6 +151,8 @@ Define_Module(MobilePhone);
 
 void MobilePhone::initialize() {
     drop_count = 0;
+    sent_count = 0;
+    recv_count = 0;
     left = this->getParentModule()->par("left").boolValue();
     scheduleAt(simTime() + 15.0, new cMessage("browseBook"));
     scheduleAt(simTime() + 27.0, new cMessage("payBook"));
@@ -125,7 +161,7 @@ void MobilePhone::initialize() {
 
 }
 void MobilePhone::handleMessage(cMessage *msg) {
-    sprintf(displayString, "lost:%d", drop_count);
+    sprintf(displayString, "sent:%d recv:%d lost:%d", sent_count, recv_count, drop_count);
     this->getParentModule()->getDisplayString().setTagArg("t", 0,
                 displayString);
 
@@ -133,24 +169,42 @@ void MobilePhone::handleMessage(cMessage *msg) {
             && drop_count < 5) {
         this->getParentModule()->bubble("Message Lost");
         drop_count++;
+
     } else if (strcmp(msg->getName(), "3- Cloud ready to start") == 0
             && drop_count >= 5) {
         send(new ComputerMsg("4- ACK"), "gate$o", 0);
         send(new ComputerMsg("5- Where is the book I am looking for?"),
                 "gate$o", 0);
+        sent_count+=2;
+        recv_count++;
     } else if (strcmp(msg->getName(),
             "7- The book you are looking for is in the left-hand shelf") == 0
             || strcmp(msg->getName(),
                     "8- The book you are looking for is in the right-hand shelf")
                     == 0) {
+        recv_count+=2;
         send(new ComputerMsg("9- ACK"), "gate$o", 0);
+        sent_count++;
     } else if (strcmp(msg->getName(), "browseBook") == 0) {
+
         this->getParentModule()->bubble("Browse Book");
     } else if (strcmp(msg->getName(), "payBook") == 0) {
+
         send(new ComputerMsg("10- Pay the Book"), "gate$o", 1);
-    } else if (strcmp(msg->getName(), "12- Book payed") == 0) {
-        send(new ComputerMsg("13- ACK"), "gate$o", 1);
+        sent_count++;
+    } else if (strcmp(msg->getName(), "11- ACK") == 0){
+        recv_count++;
     }
+
+    else if (strcmp(msg->getName(), "12- Book payed") == 0) {
+        recv_count++;
+        send(new ComputerMsg("13- ACK"), "gate$o", 1);
+        sent_count++;
+    }
+
+    sprintf(displayString, "sent:%d recv:%d lost:%d", sent_count, recv_count, drop_count);
+        this->getParentModule()->getDisplayString().setTagArg("t", 0,
+                    displayString);
 }
 
 void MobilePhone::finish() {

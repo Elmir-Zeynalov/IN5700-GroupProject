@@ -1,9 +1,9 @@
 [General]
-last-configname=left
+last-configname=right
 last-runnumber=0
 
 [RunModeProfiles]
-run-playback-speed=0.3311311214825911
+run-playback-speed=0.6165950018614822
 run-min-playback-speed=0.01
 run-max-playback-speed=100
 run-min-animation-speed=nan
