@@ -27,6 +27,9 @@ private:
     int cloud_to_computer;
     int cloud_sent_power;
     int clount_recv_power;
+
+    int delay_sent;
+
 protected:
     // The following redefined virtual function holds the algorithm.
     virtual void initialize() override;
@@ -36,7 +39,6 @@ protected:
 
 };
 
-// The module class needs to be registered with OMNeT++
 Define_Module(Cloud);
 
 void Cloud::initialize() {
@@ -44,8 +46,11 @@ void Cloud::initialize() {
     recv_count = 0;
     cloud_to_phone = 0;
     cloud_to_computer = 0;
+
     cloud_sent_power = 1;
-    clount_recv_power = 0;
+    clount_recv_power = 1;
+
+    delay_sent = 1;
 
     left = par("left").boolValue();
 }
@@ -112,6 +117,7 @@ void Cloud::updateCloudStats()
     sprintf(temp, "Total number of messages sent/received by the cloud= %d", sent_count + recv_count);
     total_num_cloud->setText(temp);
 
+    //[SENT POWER ]
     cLabelFigure *total_power_cloud_to_smart= (cLabelFigure*)(canvas->getFigure("total_power_cloud_to_smart"));
     sprintf(temp, "cloud (from cloud to smartphone) = %d", cloud_to_phone * cloud_sent_power);
     total_power_cloud_to_smart->setText(temp);
@@ -120,6 +126,31 @@ void Cloud::updateCloudStats()
     sprintf(temp, "cloud (from cloud to computer) = %d", cloud_to_computer * cloud_sent_power);
     total_power_cloud_to_comp->setText(temp);
 
+    //[RECV POWER]
+    cLabelFigure *total_power_rcvd_cloud_to_smart= (cLabelFigure*)(canvas->getFigure("total_power_rcvd_cloud_to_smart"));
+    sprintf(temp, "cloud (from cloud to smartphone) = %d", cloud_to_phone * clount_recv_power);
+    total_power_rcvd_cloud_to_smart->setText(temp);
+
+    cLabelFigure *total_power_rcvd_cloud_to_comp= (cLabelFigure*)(canvas->getFigure("total_power_rcvd_cloud_to_comp"));
+    sprintf(temp, "cloud (from cloud to computer) = %d", cloud_to_computer * clount_recv_power);
+    total_power_rcvd_cloud_to_comp->setText(temp);
+
+    //[DELAY]
+    cLabelFigure *total_delay_cloud_to_smart= (cLabelFigure*)(canvas->getFigure("total_delay_cloud_to_smart"));
+    sprintf(temp, "cloud (from cloud to smartphone) = %d", cloud_to_phone * delay_sent);
+    total_delay_cloud_to_smart->setText(temp);
+
+    cLabelFigure *total_delay_cloud_to_comp= (cLabelFigure*)(canvas->getFigure("total_delay_cloud_to_comp"));
+    sprintf(temp, "cloud (from cloud to computer) = %d", cloud_to_computer * delay_sent);
+    total_delay_cloud_to_comp->setText(temp);
+
+    cLabelFigure *total_delay_rcvd_cloud_to_smart= (cLabelFigure*)(canvas->getFigure("total_delay_rcvd_cloud_to_smart"));
+    sprintf(temp, "cloud (from cloud to smartphone) = %d", cloud_to_phone * delay_sent);
+    total_delay_rcvd_cloud_to_smart->setText(temp);
+
+    cLabelFigure *total_delay_rcvd_cloud_to_comp= (cLabelFigure*)(canvas->getFigure("total_delay_rcvd_cloud_to_comp"));
+    sprintf(temp, "cloud (from cloud to computer) = %d", cloud_to_computer * delay_sent);
+    total_delay_rcvd_cloud_to_comp->setText(temp);
 }
 
 void Cloud::finish() {
@@ -136,6 +167,9 @@ private:
 
     int computer_sent_power;
     int computer_recv_power;
+
+    int delay_sent;
+
 protected:
     // The following redefined virtual function holds the algorithm.
     virtual void initialize() override;
@@ -155,6 +189,8 @@ void Computer::initialize() {
 
     computer_sent_power = 1;
     computer_recv_power = 1;
+
+    delay_sent = 1;
 
     send(new ComputerMsg("1- Contents of Book Table"), "gate$o", 0);
     computer_to_cloud++;
@@ -200,6 +236,33 @@ void Computer::updateCloudStats()
     cLabelFigure *total_power_comp_to_smart= (cLabelFigure*)(canvas->getFigure("total_power_comp_to_smart"));
     sprintf(temp, "computer (from computer to smartphone)= %d", computer_to_phone * computer_sent_power);
     total_power_comp_to_smart->setText(temp);
+
+    //[RECV POWER]
+    cLabelFigure *total_power_rcvd_comp_to_smart= (cLabelFigure*)(canvas->getFigure("total_power_rcvd_comp_to_smart"));
+    sprintf(temp, "computer (from computer to smartphone)= %d", computer_to_phone * computer_recv_power);
+    total_power_rcvd_comp_to_smart->setText(temp);
+
+    cLabelFigure *total_power_rcvd_comp_to_cloud= (cLabelFigure*)(canvas->getFigure("total_power_rcvd_comp_to_cloud"));
+    sprintf(temp, "computer (from computer to cloud)= %d", computer_to_cloud * computer_recv_power);
+    total_power_rcvd_comp_to_cloud->setText(temp);
+
+    //[DELAY]
+    cLabelFigure *total_delay_comp_to_smart= (cLabelFigure*)(canvas->getFigure("total_delay_comp_to_smart"));
+    sprintf(temp, "computer (from computer to smartphone)= %d", computer_to_phone * delay_sent);
+    total_delay_comp_to_smart->setText(temp);
+
+    cLabelFigure *total_delay_comp_to_cloud= (cLabelFigure*)(canvas->getFigure("total_delay_comp_to_cloud"));
+    sprintf(temp, "computer (from computer to cloud)= %d", computer_to_cloud * delay_sent);
+    total_delay_comp_to_cloud->setText(temp);
+
+    cLabelFigure *total_delay_rcvd_comp_to_smart= (cLabelFigure*)(canvas->getFigure("total_delay_rcvd_comp_to_smart"));
+    sprintf(temp, "computer (from computer to smartphone)= %d", computer_to_phone * delay_sent);
+    total_delay_rcvd_comp_to_smart->setText(temp);
+
+    cLabelFigure *total_delay_rcvd_comp_to_cloud= (cLabelFigure*)(canvas->getFigure("total_delay_rcvd_comp_to_cloud"));
+    sprintf(temp, "computer (from computer to cloud)= %d", computer_to_cloud * delay_sent);
+    total_delay_rcvd_comp_to_cloud->setText(temp);
+
 }
 
 
@@ -222,6 +285,8 @@ private:
     int phone_sent_power;
     int phone_recv_power;
 
+    int delay_sent;
+
 protected:
     // The following redefined virtual function holds the algorithm.
     virtual void initialize() override;
@@ -242,6 +307,9 @@ void MobilePhone::initialize() {
 
     phone_sent_power = 1;
     phone_recv_power = 1;
+
+    delay_sent = 1;
+
     left = this->getParentModule()->par("left").boolValue();
     scheduleAt(simTime() + 15.0, new cMessage("browseBook"));
     scheduleAt(simTime() + 27.0, new cMessage("payBook"));
@@ -307,7 +375,6 @@ void MobilePhone::updateCloudStats()
     cCanvas* canvas = this->getParentModule()->getParentModule()->getCanvas();
     char temp[100];
 
-
     cLabelFigure *total_num_smartphone= (cLabelFigure*)(canvas->getFigure("total_num_smartphone"));
     sprintf(temp, "Total number of messages sent/received by the smartphone= %d", sent_count + recv_count);
     total_num_smartphone->setText(temp);
@@ -319,6 +386,32 @@ void MobilePhone::updateCloudStats()
     cLabelFigure *total_power_smart_to_comp= (cLabelFigure*)(canvas->getFigure("total_power_smart_to_comp"));
     sprintf(temp, "smartphone (from smartphone to computer)= %d", phone_to_computer * phone_sent_power);
     total_power_smart_to_comp->setText(temp);
+
+    //[RECV POWER]
+    cLabelFigure *total_power_rcvd_smart_to_cloud= (cLabelFigure*)(canvas->getFigure("total_power_rcvd_smart_to_cloud"));
+    sprintf(temp, "smartphone (from smartphone to cloud)= %d", phone_to_cloud * phone_recv_power);
+    total_power_rcvd_smart_to_cloud->setText(temp);
+
+    cLabelFigure *total_power_rcvd_smart_to_comp= (cLabelFigure*)(canvas->getFigure("total_power_rcvd_smart_to_comp"));
+    sprintf(temp, "smartphone (from smartphone to computer)= %d", phone_to_computer * phone_recv_power);
+    total_power_rcvd_smart_to_comp->setText(temp);
+
+    //[DELAY]
+    cLabelFigure *total_delay_smart_to_cloud= (cLabelFigure*)(canvas->getFigure("total_delay_smart_to_cloud"));
+    sprintf(temp, "smartphone (from smartphone to cloud)= %d", phone_to_cloud * delay_sent);
+    total_delay_smart_to_cloud->setText(temp);
+
+    cLabelFigure *total_delay_smart_to_comp= (cLabelFigure*)(canvas->getFigure("total_delay_smart_to_comp"));
+    sprintf(temp, "smartphone (from smartphone to computer)= %d", phone_to_computer * delay_sent);
+    total_delay_smart_to_comp->setText(temp);
+
+    cLabelFigure *total_delay_rcvd_smart_to_cloud= (cLabelFigure*)(canvas->getFigure("total_delay_rcvd_smart_to_cloud"));
+    sprintf(temp, "smartphone (from smartphone to cloud)= %d", phone_to_cloud * delay_sent);
+    total_delay_rcvd_smart_to_cloud->setText(temp);
+
+    cLabelFigure *total_delay_rcvd_smart_to_comp= (cLabelFigure*)(canvas->getFigure("total_delay_rcvd_smart_to_comp"));
+    sprintf(temp, "smartphone (from smartphone to computer)= %d", phone_to_computer * delay_sent);
+    total_delay_rcvd_smart_to_comp->setText(temp);
 
 }
 void MobilePhone::finish() {
