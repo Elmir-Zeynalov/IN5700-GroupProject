@@ -11,7 +11,7 @@
 #include <string.h>
 #include <omnetpp.h>
 #include "ComputerMessage_m.h"
-
+//CLOUD
 using namespace omnetpp;
 
 
@@ -416,7 +416,6 @@ void MobilePhone::updateCloudStats()
 }
 void MobilePhone::finish() {
 }
-
 
 
 
